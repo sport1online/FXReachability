@@ -31,8 +31,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#if !TARGET_OS_WATCH
 #import <SystemConfiguration/SystemConfiguration.h>
-
+#endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"

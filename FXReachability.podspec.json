@@ -1,15 +1,33 @@
 {
   "name": "FXReachability",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "license": "zlib",
   "summary": "Lightweight reachability class for Mac and iOS.",
   "homepage": "https://github.com/nicklockwood/FXReachability",
   "authors": "Nick Lockwood",
   "source": {
-    "git": "https://github.com/nicklockwood/FXReachability.git",
-    "tag": "1.3.2"
+    "git": "https://github.com/sport1online/FXReachability.git",
+    "tag": "1.3.3"
   },
   "source_files": "FXReachability",
+  "ios": {
+    "frameworks": "SystemConfiguration"
+  },
+  "osx": {
+    "frameworks": "SystemConfiguration"
+  },
+  "tvos": {
+    "frameworks": "SystemConfiguration"
+  },
+  "requires_arc": true,
+  "platforms": {
+    "ios": "4.3",
+    "osx": "10.6",
+    "tvos": "9.0",
+    "watchos": "2.0"
+  }
+}
+
   "frameworks": "SystemConfiguration",
   "requires_arc": true,
   "platforms": {

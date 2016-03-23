@@ -29,7 +29,6 @@
 //
 //  3. This notice may not be removed or altered from any source distribution.
 //
-
 #import "FXReachability.h"
 #import <Availability.h>
 
@@ -39,7 +38,6 @@
 #pragma GCC diagnostic ignored "-Wdirect-ivar-access"
 
 
-#import <Availability.h>
 #if !__has_feature(objc_arc)
 #error This class requires automatic reference counting
 #endif
@@ -55,15 +53,16 @@ static char * __nonnull const FXDefaultHost = "apple.com";
 
 
 @interface FXReachability ()
-
+#if !TARGET_OS_WATCH
 @property (nonatomic, assign) SCNetworkReachabilityRef reachability;
+#endif
 @property (nonatomic, assign) FXReachabilityStatus status;
 
 @end
 
 
 @implementation FXReachability
-
+#if !TARGET_OS_WATCH
 static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info)
 {
     FXReachability *self = (__bridge id)info;
@@ -82,7 +81,7 @@ static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCN
     }
     
 #endif
-    
+
     else
     {
         status = FXReachabilityStatusReachableViaWiFi;
@@ -97,10 +96,12 @@ static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCN
         [[NSNotificationCenter defaultCenter] postNotificationName:FXReachabilityStatusDidChangeNotification object:self userInfo:userInfo];
     }
 }
-
+#endif
 + (void)load
 {
+#if !TARGET_OS_WATCH
     [self performSelectorOnMainThread:@selector(sharedInstance) withObject:nil waitUntilDone:NO];
+#endif
 }
 
 + (instancetype)sharedInstance
@@ -137,7 +138,8 @@ static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCN
 {
     if (host != _host)
     {
-        if (_reachability)
+#if !TARGET_OS_WATCH
+		if (_reachability)
         {
             SCNetworkReachabilityUnscheduleFromRunLoop(_reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
             CFRelease(_reachability);
@@ -149,7 +151,8 @@ static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCN
         SCNetworkReachabilityContext context = { 0, ( __bridge void *)self, NULL, NULL, NULL };
         SCNetworkReachabilitySetCallback(_reachability, FXReachabilityCallback, &context);
         SCNetworkReachabilityScheduleWithRunLoop(_reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-    }
+#endif
+	}
 }
 
 - (instancetype)init
@@ -159,11 +162,14 @@ static void FXReachabilityCallback(__unused SCNetworkReachabilityRef target, SCN
 
 - (void)dealloc
 {
+#if !TARGET_OS_WATCH
     if (_reachability)
     {
         SCNetworkReachabilityUnscheduleFromRunLoop(_reachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
         CFRelease(_reachability);
     }
+#endif
 }
+
 
 @end
